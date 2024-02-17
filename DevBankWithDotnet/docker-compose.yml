@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  pg_database:
+    container_name: pg_database
+    image: postgres:16.1-alpine3.19
+    volumes:
+      - ./_script/script.sql:/docker-entrypoint-initdb.d/configure.sql   # Monta um volume com os scripts SQL
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_USER=postgres
+    ports:
+      - "5432:5432"
+    command: [ "postgres", "-c", "log_statement=all"]
+    deploy:
+      resources:
+        limits:
+          cpus: "0.60"
+          memory: "380MB"
+
+  dev_bank_api_1:
+    container_name: dev_bank_api_1
+    image: devbankwithdotnet:latest
+    depends_on:
+      - pg_database
+    deploy:
+      resources:
+        limits:
+          cpus: "0.35"
+          memory: "80MB"
+
+  dev_bank_api_2:
+    container_name: dev_bank_api_2
+    image: devbankwithdotnet:latest
+    depends_on:
+      - pg_database
+    deploy:
+      resources:
+        limits:
+          cpus: "0.30"
+          memory: "80MB"
+
+
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - "9999:9999"
+    volumes:
+      - ./_nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - dev_bank_api_1
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: "10MB"
