@@ -1,3 +1,4 @@
+using DevBankWithDotnet.ErrorHandler;
 using DevBankWithDotnet.Repositories;
 using Microsoft.AspNetCore.Http.Timeouts;
 
@@ -7,12 +8,14 @@ builder.WebHost
     .UseKestrel()
     .ConfigureKestrel(o =>
 {
-    o.Limits.MaxConcurrentConnections = 300;
+    o.Limits.MaxConcurrentConnections = 350;
     o.AddServerHeader = false;
 });
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+
 builder.Services.AddScoped<ClienteRepository>();
 builder.Services.AddScoped<NpgsqlContext>();
 
@@ -27,7 +30,7 @@ builder.Services.AddRequestTimeouts(options => {
 
 
 var app = builder.Build();
-
+app.UseErrorHandler(app.Services.GetService<ILoggerFactory>()!);
 app.MapControllers();
 
 

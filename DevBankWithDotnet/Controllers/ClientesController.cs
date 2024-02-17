@@ -5,59 +5,59 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DevBankWithDotnet.Controllers;
 
+
 [ApiController]
 [Route("[controller]")]
 public class ClientesController : ControllerBase
 {
+    private readonly ILogger logger;
+
+    public ClientesController(ILogger<ClientesController> logger)
+    {
+        this.logger = logger;
+    }
 
     [HttpGet("{id:int}/extrato")]
     public async Task<ActionResult<Extrato>> ObterExtrato(int id, [FromServices] ClienteRepository repository, CancellationToken cancellationToken)
     {
         if (id < 1 || id > 5) 
         {
-            var response = Content("");
-            response.StatusCode = 404;
-            return response;               
+            return NotFound();               
         }
 
         var res = await repository.ObterExtrato(id, cancellationToken);
         
         if (res == null)
         {
-            var response = Content("");
-            response.StatusCode = 422;
-            return response;
+            return UnprocessableEntity();
         }
 
         return Ok(res);
     }
 
+    
     [HttpPost("{id:int}/transacoes")]
     public async Task<ActionResult<Resultado>> AdicionarTransacao(int id, [FromBody] TransacaoCommand command, [FromServices] ClienteRepository repository, CancellationToken cancellationToken)
     {
-        if (id < 1 || id > 5)
+        logger.LogCritical($"Comando enviado no Post das transacoes => ({id}, {command.Descricao},{command.Tipo},{command.Valor})");
+
+        if (id < 1 || id > 5) 
         {
-            var response = Content("");
-            response.StatusCode = 404;
-            return response;
+            return NotFound();               
         }
 
-        if (command.Descricao.Length > 10 ||
-            string.IsNullOrWhiteSpace(command.Descricao) ||
+        if (string.IsNullOrWhiteSpace(command.Descricao) ||
+            command.Descricao.Length > 10 ||
             (command.Valor - (int)command.Valor) > 0 ||
             (command.Tipo != 'd' && command.Tipo != 'c'))
         {
-            var response = Content("");
-            response.StatusCode = 422;
-            return response;
+            return UnprocessableEntity();
         }
 
         var res = await repository.AdicionarTransacao(id, command, cancellationToken);
 
         if (res == null) {
-            var response = Content("");
-            response.StatusCode = 422;
-            return response;
+            return UnprocessableEntity();
         }
 
         return Ok(res);

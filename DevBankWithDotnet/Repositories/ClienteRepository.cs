@@ -16,7 +16,7 @@ public class ClienteRepository
 
     public async Task<Resultado?> AdicionarTransacao(int clienteId, TransacaoCommand command, CancellationToken cancellationToken)
     {
-        var novoValor = int.Abs((int)command.Valor);
+        var novoValor = (int)command.Valor;
         using (NpgsqlConnection connection = npgsqlContext.Connection())
         {
             var sqlCommand = new CommandDefinition("SELECT Total Saldo, Limite, Versao FROM public.Cliente WHERE Id=@Id",
@@ -44,7 +44,7 @@ public class ClienteRepository
                     break;
                 default:
                     return null;
-            }   
+            }
 
             using (var transaction = connection.BeginTransaction())
             {                

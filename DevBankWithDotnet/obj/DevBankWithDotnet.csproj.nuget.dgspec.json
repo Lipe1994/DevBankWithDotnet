@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\git\\OTG\\DevBankWithDotnet\\DevBankWithDotnet\\DevBankWithDotnet.csproj": {}
+    "C:\\Users\\lipef\\git\\Lipe1994\\DevBankWithDotnet\\DevBankWithDotnet\\DevBankWithDotnet.csproj": {}
   },
   "projects": {
-    "C:\\git\\OTG\\DevBankWithDotnet\\DevBankWithDotnet\\DevBankWithDotnet.csproj": {
+    "C:\\Users\\lipef\\git\\Lipe1994\\DevBankWithDotnet\\DevBankWithDotnet\\DevBankWithDotnet.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\git\\OTG\\DevBankWithDotnet\\DevBankWithDotnet\\DevBankWithDotnet.csproj",
+        "projectUniqueName": "C:\\Users\\lipef\\git\\Lipe1994\\DevBankWithDotnet\\DevBankWithDotnet\\DevBankWithDotnet.csproj",
         "projectName": "DevBankWithDotnet",
-        "projectPath": "C:\\git\\OTG\\DevBankWithDotnet\\DevBankWithDotnet\\DevBankWithDotnet.csproj",
+        "projectPath": "C:\\Users\\lipef\\git\\Lipe1994\\DevBankWithDotnet\\DevBankWithDotnet\\DevBankWithDotnet.csproj",
         "packagesPath": "C:\\Users\\lipef\\.nuget\\packages\\",
-        "outputPath": "C:\\git\\OTG\\DevBankWithDotnet\\DevBankWithDotnet\\obj\\",
+        "outputPath": "C:\\Users\\lipef\\git\\Lipe1994\\DevBankWithDotnet\\DevBankWithDotnet\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\lipef\\AppData\\Roaming\\NuGet\\NuGet.Config",

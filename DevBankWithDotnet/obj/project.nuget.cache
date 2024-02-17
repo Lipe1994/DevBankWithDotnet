@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "6xX2P+4bAPnoujIshACN7TJn7lSm0jPCqmThHBb5mXA6oIapt4rjw2/49f9HQZpl97G5lXqB7v/K7cESVB8qEw==",
+  "dgSpecHash": "EHlpXK8gSCMUOmyrtIzItnPtPdLwlBlu0JBReg6t7hF/Mq6GgwDYCZa5NEpZm+nILlzxHDfAeO+K1DTvqi/6ow==",
   "success": true,
-  "projectFilePath": "C:\\git\\OTG\\DevBankWithDotnet\\DevBankWithDotnet\\DevBankWithDotnet.csproj",
+  "projectFilePath": "C:\\Users\\lipef\\git\\Lipe1994\\DevBankWithDotnet\\DevBankWithDotnet\\DevBankWithDotnet.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lipef\\.nuget\\packages\\dapper\\2.1.28\\dapper.2.1.28.nupkg.sha512",
     "C:\\Users\\lipef\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",

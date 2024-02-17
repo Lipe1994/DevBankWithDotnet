@@ -3,7 +3,7 @@ version: '3.8'
 services:
   pg_database:
     container_name: pg_database
-    image: postgres:16.1-alpine3.19
+    image: postgres:15.4
     volumes:
       - ./_script/script.sql:/docker-entrypoint-initdb.d/configure.sql   # Monta um volume com os scripts SQL
     environment:
@@ -16,8 +16,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.60"
-          memory: "380MB"
+          cpus: "0.50"
+          memory: "360MB"
 
   dev_bank_api_1:
     container_name: dev_bank_api_1
@@ -27,8 +27,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.35"
-          memory: "80MB"
+          cpus: "0.40"
+          memory: "90MB"
 
   dev_bank_api_2:
     container_name: dev_bank_api_2
@@ -38,8 +38,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.30"
-          memory: "80MB"
+          cpus: "0.40"
+          memory: "90MB"
 
 
   nginx:
@@ -54,5 +54,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.25"
+          cpus: "0.20"
           memory: "10MB"
+
+networks:
+  default:
+    driver: bridge
+    name: rinha-backend-2024
