@@ -9,11 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="_script\script.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="_script\script.sql" />
+    <Content Include="script.sql" />
   </ItemGroup>
 
   <ItemGroup>
