@@ -1,6 +1,6 @@
 ### Submissão para Rinha de Backend, Segunda Edição: 2024/Q1 - Controle de Concorrência
 
-![Imagem que representa csharp](./csharp_logo.png)
+<img src="csharp_logo.png" alt="Imagem que representa csharp" height="250"/>
 
 ##### Stack:
 
