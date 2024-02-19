@@ -28,12 +28,13 @@ public class ClienteRepository
                 switch (command.Tipo)
                 {
                     case 'd':
-                        resultado = await connection.QueryFirstAsync<Resultado?>(
+                        resultado = await connection.QueryFirstOrDefaultAsync<Resultado>(
                             new CommandDefinition(
-                                @"UPDATE public.Cliente SET Total=Total-@novoValor  
-                                    WHERE Id=@Id
-                                    AND abs(Total - @novoValor) <= Limite
-                                RETURNING Limite, Total, (abs(Total - @novoValor) <= Limite) as LinhaAfetada",
+                                @"WITH Updated as(
+                                    UPDATE Cliente c SET Total=Total-@novoValor  
+                                        WHERE Id=@Id
+                                        AND abs(Total - @novoValor) <= Limite
+                                    RETURNING Limite, Total) SELECT true LinhaAfetada, Limite, Total FROM Updated",
                             new
                             {
                                 Id = clienteId,
@@ -43,11 +44,12 @@ public class ClienteRepository
                             cancellationToken: cancellationToken));
                         break;
                     case 'c':
-                        resultado = await connection.QueryFirstAsync<Resultado?>(
+                        resultado = await connection.QueryFirstOrDefaultAsync<Resultado>(
                             new CommandDefinition(
-                                @"UPDATE public.Cliente SET Total=Total+@novoValor
-                                    WHERE Id=@Id
-                                RETURNING limite, Total, (true) as LinhaAfetada",
+                             @"WITH Updated as (
+                                UPDATE public.Cliente c SET Total=Total+@novoValor  
+                                WHERE Id=@Id
+                             RETURNING Limite, Total) SELECT true LinhaAfetada, Limite, Total FROM Updated",
                             new
                             {
                                 Id = clienteId,
@@ -62,7 +64,6 @@ public class ClienteRepository
 
                 if (resultado?.LinhaAfetada == null || !resultado!.LinhaAfetada)
                 {
-                    logger.LogWarning("Transação não permitida para o cliente {clienteId} devivo ao update não retornar LinhaAfetada", clienteId);
                     return null;
                 }
 

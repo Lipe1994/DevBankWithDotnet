@@ -9,5 +9,5 @@ public class Resultado
     public int Total { get; set; }
 
     [JsonIgnore]
-    public bool LinhaAfetada { get; set; }
+    public bool LinhaAfetada { get; set; } = false;
 }
