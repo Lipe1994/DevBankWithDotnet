@@ -5,8 +5,9 @@ namespace DevBankWithDotnet.Repositories.Model;
 public class Resultado
 {
     public int Limite { get; set; }
-    public int Saldo { get; set; }
+    [JsonPropertyName("saldo")]
+    public int Total { get; set; }
 
     [JsonIgnore]
-    public int Versao { get; set; }
+    public bool LinhaAfetada { get; set; }
 }

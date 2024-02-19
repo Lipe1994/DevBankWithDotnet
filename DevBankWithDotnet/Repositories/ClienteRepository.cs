@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DevBankWithDotnet.Controllers;
 using DevBankWithDotnet.Repositories.Commands;
 using DevBankWithDotnet.Repositories.Model;
 using Npgsql;
@@ -8,10 +9,12 @@ namespace DevBankWithDotnet.Repositories;
 public class ClienteRepository
 {
     private readonly NpgsqlContext npgsqlContext;
+    private readonly ILogger<ClienteRepository> logger;
 
-    public ClienteRepository(NpgsqlContext npgsqlContext)
+    public ClienteRepository(NpgsqlContext npgsqlContext, ILogger<ClienteRepository> logger)
     {
         this.npgsqlContext = npgsqlContext;
+        this.logger = logger;
     }
 
     public async Task<Resultado?> AdicionarTransacao(int clienteId, TransacaoCommand command, CancellationToken cancellationToken)
@@ -19,49 +22,47 @@ public class ClienteRepository
         var novoValor = (int)command.Valor;
         using (NpgsqlConnection connection = npgsqlContext.Connection())
         {
-            var sqlCommand = new CommandDefinition("SELECT Total Saldo, Limite, Versao FROM public.Cliente WHERE Id=@Id",
-                new { Id = clienteId }, 
-                cancellationToken: cancellationToken);
-
-            var resultado = await connection.QueryFirstOrDefaultAsync<Resultado>(sqlCommand);
-
-            if (resultado == null)
-            {
-                return null;
-            }
-
-            switch (command.Tipo)
-            {
-                case 'd':
-                    if (int.Abs((resultado.Saldo - novoValor)) > resultado!.Limite)
-                    {
-                        return null;
-                    }
-                    resultado.Saldo -= novoValor;
-                    break;
-                case 'c':
-                    resultado.Saldo += novoValor;
-                    break;
-                default:
-                    return null;
-            }
-
             using (var transaction = connection.BeginTransaction())
-            {                
-                var linhasAfetadas = await connection.ExecuteAsync(
-                    new CommandDefinition("UPDATE public.Cliente SET Total=@Saldo, Versao=@Versao WHERE Id=@Id AND Versao=@OldVersion",
-                    new
-                    {
-                        Id = clienteId,
-                        resultado.Saldo,
-                        OldVersion = resultado.Versao,
-                        Versao = resultado.Versao++
-                    },
-                    transaction: transaction,
-                    cancellationToken: cancellationToken));
-
-                if (linhasAfetadas == 0)
+            {
+                Resultado? resultado;
+                switch (command.Tipo)
                 {
+                    case 'd':
+                        resultado = await connection.QueryFirstAsync<Resultado?>(
+                            new CommandDefinition(
+                                @"UPDATE public.Cliente SET Total=Total-@novoValor  
+                                    WHERE Id=@Id
+                                    AND abs(Total - @novoValor) <= Limite
+                                RETURNING Limite, Total, (abs(Total - @novoValor) <= Limite) as LinhaAfetada",
+                            new
+                            {
+                                Id = clienteId,
+                                novoValor,
+                            },
+                            transaction: transaction,
+                            cancellationToken: cancellationToken));
+                        break;
+                    case 'c':
+                        resultado = await connection.QueryFirstAsync<Resultado?>(
+                            new CommandDefinition(
+                                @"UPDATE public.Cliente SET Total=Total+@novoValor
+                                    WHERE Id=@Id
+                                RETURNING limite, Total, (true) as LinhaAfetada",
+                            new
+                            {
+                                Id = clienteId,
+                                novoValor,
+                            },
+                            transaction: transaction,
+                            cancellationToken: cancellationToken));
+                        break;
+                    default:
+                        return null;
+                }
+
+                if (resultado?.LinhaAfetada == null || !resultado!.LinhaAfetada)
+                {
+                    logger.LogWarning("Transação não permitida para o cliente {clienteId} devivo ao update não retornar LinhaAfetada", clienteId);
                     return null;
                 }
 

@@ -39,8 +39,7 @@ public class ClientesController : ControllerBase
     [HttpPost("{id:int}/transacoes")]
     public async Task<ActionResult<Resultado>> AdicionarTransacao(int id, [FromBody] TransacaoCommand command, [FromServices] ClienteRepository repository, CancellationToken cancellationToken)
     {
-        logger.LogCritical($"Comando enviado no Post das transacoes => ({id}, {command.Descricao},{command.Tipo},{command.Valor})");
-
+        
         if (id < 1 || id > 5) 
         {
             return NotFound();               
