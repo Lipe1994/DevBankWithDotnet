@@ -5,7 +5,7 @@ services:
     container_name: pg_dotnet_database
     image: postgres:15.4
     volumes:
-      - ./_script/script.sql:/docker-entrypoint-initdb.d/configure.sql   # Monta um volume com os scripts SQL
+      - ./script.sql:/docker-entrypoint-initdb.d/configure.sql   # Monta um volume com os scripts SQL
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD=123456
@@ -48,7 +48,7 @@ services:
     ports:
       - "9999:9999"
     volumes:
-      - ./_nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - dotnet_bank_api_1
       - dotnet_bank_api_2
