@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DevBankWithDotnet")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ade24dd080883fea7434b6464bf242e4aa6e8ac6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("DevBankWithDotnet")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DevBankWithDotnet")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
