@@ -8,7 +8,7 @@ builder.WebHost
     .UseKestrel()
     .ConfigureKestrel(o =>
 {
-    o.Limits.MaxConcurrentConnections = 250;
+    o.Limits.MaxConcurrentConnections = 200;
     o.AddServerHeader = false;
 });
 
@@ -23,7 +23,7 @@ builder.Services.AddScoped<NpgsqlContext>();
 builder.Services.AddRequestTimeouts(options => {
     options.DefaultPolicy = new RequestTimeoutPolicy
     {
-        Timeout = TimeSpan.FromMilliseconds(1200),
+        Timeout = TimeSpan.FromMilliseconds(2000),
         TimeoutStatusCode = 422
     };
 });

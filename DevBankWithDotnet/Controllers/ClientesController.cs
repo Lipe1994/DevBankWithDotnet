@@ -10,12 +10,6 @@ namespace DevBankWithDotnet.Controllers;
 [Route("[controller]")]
 public class ClientesController : ControllerBase
 {
-    private readonly ILogger logger;
-
-    public ClientesController(ILogger<ClientesController> logger)
-    {
-        this.logger = logger;
-    }
 
     [HttpGet("{id:int}/extrato")]
     public async Task<ActionResult<Extrato>> ObterExtrato(int id, [FromServices] ClienteRepository repository, CancellationToken cancellationToken)
