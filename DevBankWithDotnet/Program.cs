@@ -15,23 +15,20 @@ builder.WebHost
 // Add services to the container.
 builder.Services.AddControllers();
 
-
 builder.Services.AddScoped<ClienteRepository>();
-builder.Services.AddScoped<NpgsqlContext>();
+builder.Services.AddSingleton<NpgsqlContext>();
 
 //police de timeout
 builder.Services.AddRequestTimeouts(options => {
     options.DefaultPolicy = new RequestTimeoutPolicy
     {
-        Timeout = TimeSpan.FromMilliseconds(2000),
+        Timeout = TimeSpan.FromMilliseconds(1200),
         TimeoutStatusCode = 422
     };
 });
 
-
 var app = builder.Build();
 app.UseErrorHandler(app.Services.GetService<ILoggerFactory>()!);
 app.MapControllers();
-
 
 app.Run();

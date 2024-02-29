@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace DevBankWithDotnet.Repositories;
 
@@ -6,7 +7,7 @@ public class NpgsqlContext
 {
 
     private readonly IConfiguration configuration;
-    private NpgsqlConnection? _connection;
+    private NpgsqlDataSource? _dataSource;
 
 
     public NpgsqlContext(IConfiguration configuration)
@@ -16,22 +17,19 @@ public class NpgsqlContext
 
     ~NpgsqlContext()
     {
-        _connection?.Close();
-        _connection?.Dispose();
+        _dataSource?.Dispose();
     }
 
-    public NpgsqlConnection Connection() {
+    public NpgsqlDataSource Connection() {
 
-        if(_connection == null)
+        if(_dataSource == null)
         {
-            _connection = new NpgsqlConnection(configuration.GetConnectionString("DevBank")!);
+            var dataSourceBuilder = new NpgsqlDataSourceBuilder(configuration.GetConnectionString("DevBank")!);
+            _dataSource = dataSourceBuilder.Build();
         }
 
-        if (_connection.State != System.Data.ConnectionState.Open) { 
-            _connection.Open();
-        }
 
-        return _connection;
+        return _dataSource;
     }
 
     

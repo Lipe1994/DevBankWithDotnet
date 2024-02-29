@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using DevBankWithDotnet.Controllers;
 using DevBankWithDotnet.Repositories.Commands;
 using DevBankWithDotnet.Repositories.Model;
 using Npgsql;
@@ -20,7 +19,7 @@ public class ClienteRepository
     public async Task<Resultado?> AdicionarTransacao(int clienteId, TransacaoCommand command, CancellationToken cancellationToken)
     {
         var novoValor = (int)command.Valor;
-        using (NpgsqlConnection connection = npgsqlContext.Connection())
+        using (NpgsqlConnection connection = await npgsqlContext.Connection().OpenConnectionAsync())
         {
             using (var transaction = connection.BeginTransaction())
             {
@@ -89,7 +88,7 @@ public class ClienteRepository
 
     public async Task<Extrato?> ObterExtrato(int clienteId, CancellationToken cancellationToken)
     {
-        using (NpgsqlConnection connection = npgsqlContext.Connection())
+        using (NpgsqlConnection connection = await npgsqlContext.Connection().OpenConnectionAsync())
         {
 
             var sql = @"
