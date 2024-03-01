@@ -15,8 +15,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.45"
-          memory: "360MB"
+          cpus: "0.35"
+          memory: "300MB"
 
   dotnet_bank_api_1:
     container_name: dotnet_bank_api_1
@@ -26,8 +26,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.45"
-          memory: "90MB"
+          cpus: "0.50"
+          memory: "120MB"
 
   dotnet_bank_api_2:
     container_name: dotnet_bank_api_2
@@ -38,8 +38,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.45"
-          memory: "90MB"
+          cpus: "0.50"
+          memory: "120MB"
 
 
   dotnet_nginx:

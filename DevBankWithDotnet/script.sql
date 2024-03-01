@@ -1,4 +1,4 @@
-ALTER SYSTEM SET max_connections = 300;
+ALTER SYSTEM SET max_connections = 200;
 
 
 CREATE TABLE public.Cliente (

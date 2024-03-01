@@ -19,7 +19,7 @@ public class ClienteRepository
     public async Task<Resultado?> AdicionarTransacao(int clienteId, TransacaoCommand command, CancellationToken cancellationToken)
     {
         var novoValor = (int)command.Valor;
-        using (NpgsqlConnection connection = await npgsqlContext.Connection().OpenConnectionAsync())
+        using (NpgsqlConnection connection = await npgsqlContext.Connection.OpenConnectionAsync())
         {
             using (var transaction = connection.BeginTransaction())
             {
@@ -88,7 +88,7 @@ public class ClienteRepository
 
     public async Task<Extrato?> ObterExtrato(int clienteId, CancellationToken cancellationToken)
     {
-        using (NpgsqlConnection connection = await npgsqlContext.Connection().OpenConnectionAsync())
+        using (NpgsqlConnection connection = await npgsqlContext.Connection.OpenConnectionAsync())
         {
 
             var sql = @"
