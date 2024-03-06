@@ -8,12 +8,10 @@ namespace DevBankWithDotnet.Repositories;
 public class ClienteRepository
 {
     private readonly NpgsqlContext npgsqlContext;
-    private readonly ILogger<ClienteRepository> logger;
 
-    public ClienteRepository(NpgsqlContext npgsqlContext, ILogger<ClienteRepository> logger)
+    public ClienteRepository(NpgsqlContext npgsqlContext)
     {
         this.npgsqlContext = npgsqlContext;
-        this.logger = logger;
     }
 
     public async Task<Resultado?> AdicionarTransacao(int clienteId, TransacaoCommand command, CancellationToken cancellationToken)
@@ -21,67 +19,38 @@ public class ClienteRepository
         var novoValor = (int)command.Valor;
         using (NpgsqlConnection connection = await npgsqlContext.Connection.OpenConnectionAsync())
         {
-            using (var transaction = connection.BeginTransaction())
-            {
                 Resultado? resultado;
                 switch (command.Tipo)
                 {
                     case 'd':
                         resultado = await connection.QueryFirstOrDefaultAsync<Resultado>(
-                            new CommandDefinition(
-                                @"WITH Updated as(
-                                    UPDATE Cliente c SET Total=Total-@novoValor  
-                                        WHERE Id=@Id
-                                        AND abs(Total - @novoValor) <= Limite
-                                    RETURNING Limite, Total) SELECT true LinhaAfetada, Limite, Total FROM Updated",
-                            new
-                            {
-                                Id = clienteId,
-                                novoValor,
-                            },
-                            transaction: transaction,
-                            cancellationToken: cancellationToken));
+                            new CommandDefinition(@"SELECT _limite Limite, _total Total, LinhaAfetada FROM debitar(@Id, @Valor, @Descricao)",
+                                new
+                                {
+                                    Id = clienteId,
+                                    Valor = novoValor,
+                                    Descricao = command.Descricao
+                                },
+                                cancellationToken: cancellationToken));
                         break;
                     case 'c':
                         resultado = await connection.QueryFirstOrDefaultAsync<Resultado>(
-                            new CommandDefinition(
-                             @"WITH Updated as (
-                                UPDATE public.Cliente c SET Total=Total+@novoValor  
-                                WHERE Id=@Id
-                             RETURNING Limite, Total) SELECT true LinhaAfetada, Limite, Total FROM Updated",
+                            new CommandDefinition(@"SELECT _limite Limite, _total Total, LinhaAfetada  FROM creditar(@Id, @Valor, @Descricao)",
                             new
                             {
                                 Id = clienteId,
-                                novoValor,
+                                Valor = novoValor,
+                                Descricao = command.Descricao
                             },
-                            transaction: transaction,
                             cancellationToken: cancellationToken));
                         break;
                     default:
                         return null;
                 }
 
-                if (resultado?.LinhaAfetada == null || !resultado!.LinhaAfetada)
-                {
-                    return null;
-                }
 
-                await connection.ExecuteAsync(
-                    new CommandDefinition("INSERT INTO public.Transacao(Valor, Tipo, Descricao, ClienteId, CriadoEm) values(@Valor, @Tipo, @Descricao, @ClienteId, @CriadoEm)", new
-                    {
-                        command.Valor,
-                        command.Tipo,
-                        command.Descricao,
-                        ClienteId = clienteId,
-                        CriadoEm = DateTime.UtcNow
-                    },
-                    transaction: transaction,
-                    cancellationToken: cancellationToken)
-                );
-
-                await transaction.CommitAsync();
                 return resultado;
-            }
+            
         }
     }
 

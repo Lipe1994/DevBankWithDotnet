@@ -8,7 +8,7 @@ builder.WebHost
     .UseKestrel()
     .ConfigureKestrel(o =>
 {
-    o.Limits.MaxConcurrentConnections = 150;
+    o.Limits.MaxConcurrentConnections = 160;
     o.AddServerHeader = false;
 });
 
